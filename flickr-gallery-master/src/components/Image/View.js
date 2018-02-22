@@ -4,13 +4,14 @@ import Lightbox from 'react-images';
 
 class View extends React.Component {
   static propTypes = {
-    url: PropTypes.string
+    url: PropTypes.string,
+    shouldOpenView: PropTypes.bool
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      lightboxIsOpen: true
+      lightboxIsOpen: this.props.shouldOpenView
     }
 
     this.gotoPrevious = this.gotoPrevious.bind(this);
@@ -21,9 +22,15 @@ class View extends React.Component {
   gotoPrevious() {
   }
 
-  componentWillReceiveProps() {
+  componentDidMount() {
+  this.setState({
+    lightboxIsOpen: this.props.shouldOpenView
+  });
+  }
+
+  componentWillReceiveProps(props) {
     this.setState({
-      lightboxIsOpen: true
+      lightboxIsOpen: props.shouldOpenView
     });
   }
 

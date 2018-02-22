@@ -43,13 +43,15 @@ class Image extends React.Component {
 
   handleDelete(){
     this.setState({
-      deleted: true
+      deleted: true,
+      expand: false
     });
   }
 
   handleRotate(){
     this.setState({
-      rotation: this.state.rotation + 90
+      rotation: this.state.rotation + 90,
+      expand: false
     });
   }
 
@@ -60,7 +62,6 @@ class Image extends React.Component {
   }
 
   render() {
-    if(this.state.expand) return <View url={this.urlFromDto(this.props.dto)}/>
     if (this.state.deleted) return null;
     return (
       <div
@@ -77,6 +78,7 @@ class Image extends React.Component {
           <FontAwesome className="image-icon" name="trash-alt" title="delete" onClick={() => this.handleDelete()}/>
           <FontAwesome className="image-icon" name="expand" title="expand" onClick={() => this.handleExpand()}/>
         </div>
+        <View url={this.urlFromDto(this.props.dto)} shouldOpenView={this.state.expand}/>
       </div>
     );
 
