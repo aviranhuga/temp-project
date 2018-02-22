@@ -13,8 +13,6 @@ class Image extends React.Component {
   constructor(props) {
     super(props);
     this.calcImageSize = this.calcImageSize.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    this.handleRotate = this.handleRotate.bind(this);
     this.state = {
       size: 200,
       deleted: false,
@@ -27,9 +25,9 @@ class Image extends React.Component {
     const {galleryWidth} = this.props;
     const targetSize = 200;
     const imagesPerRow = Math.round(galleryWidth / targetSize);
-    const size = (galleryWidth / imagesPerRow);
+    const optimalSize = galleryWidth/imagesPerRow;
     this.setState({
-      size
+      size: optimalSize
     });
   }
 
@@ -37,32 +35,20 @@ class Image extends React.Component {
     this.calcImageSize();
   }
 
+  componentWillReceiveProps() {
+   this.calcImageSize();
+    this.setState({
+      expand: false
+    });
+  }
+
   urlFromDto(dto) {
     return `https://farm${dto.farm}.staticflickr.com/${dto.server}/${dto.id}_${dto.secret}.jpg`;
   }
 
-  handleDelete(){
-    this.setState({
-      deleted: true,
-      expand: false
-    });
-  }
-
-  handleRotate(){
-    this.setState({
-      rotation: this.state.rotation + 90,
-      expand: false
-    });
-  }
-
-  handleExpand(){
-    this.setState({
-      expand: true
-    });
-  }
-
   render() {
     if (this.state.deleted) return null;
+
     return (
       <div
         className="image-root"
@@ -74,14 +60,16 @@ class Image extends React.Component {
         }}
       >
         <div className={''} style={{transform: `rotate(${-1*this.state.rotation}deg`}}>
-          <FontAwesome className="image-icon" name="sync-alt" title="rotate" onClick={() => this.handleRotate()}/>
-          <FontAwesome className="image-icon" name="trash-alt" title="delete" onClick={() => this.handleDelete()}/>
-          <FontAwesome className="image-icon" name="expand" title="expand" onClick={() => this.handleExpand()}/>
+          <FontAwesome className="image-icon" name="sync-alt" title="rotate"
+                       onClick={() => this.setState({rotation: this.state.rotation + 90, expand: false})}/>
+          <FontAwesome className="image-icon" name="trash-alt" title="delete"
+                       onClick={() => this.setState({deleted: true, expand: false})}/>
+          <FontAwesome className="image-icon" name="expand" title="expand"
+                       onClick={() => this.setState({expand: true})}/>
         </div>
         <View url={this.urlFromDto(this.props.dto)} shouldOpenView={this.state.expand}/>
       </div>
     );
-
   }
 }
 
